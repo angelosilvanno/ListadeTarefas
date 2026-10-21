@@ -16,21 +16,8 @@ function renderTaskOnHTML(task) {
         const spanToToggle = liToToggle.querySelector('span');
         const done = event.target.checked;
         
-        if (done) {
-            spanToToggle.style.textDecoration = 'line-through';
-        } else {
-            spanToToggle.style.textDecoration = 'none';
-        }
-
-        tasks = tasks.map(t => {
-            if (t.title === spanToToggle.textContent) {
-                return {
-                    title: t.title,
-                    done: done,
-                };
-            }
-            return t;
-        });
+        task.done = done;
+        spanToToggle.style.textDecoration = done ? 'line-through' : 'none';
 
         localStorage.setItem('tasks', JSON.stringify(tasks));
     });
@@ -46,9 +33,13 @@ function renderTaskOnHTML(task) {
     // Adicionando evento ao botão de remover
     button.addEventListener('click', (event) => {
         const liToRemove = event.target.parentElement;
-        const titleToRemove = liToRemove.querySelector('span').textContent;
+        const taskIndex = tasks.indexOf(task);
 
-        tasks = tasks.filter(t => t.title !== titleToRemove);
+        if (taskIndex === -1) {
+            return;
+        }
+
+        tasks = tasks.filter(t => t !== task);
 
         todoListUl.removeChild(liToRemove);
         localStorage.setItem('tasks', JSON.stringify(tasks));
